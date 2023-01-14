@@ -1,22 +1,24 @@
 import { useRouter } from "next/router";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { CgProfile } from "react-icons/cg";
-
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
-const TABS: string[] = [
-  "home",
-];
+const TABS: string[] = ["home"];
+
+const WalletMultiButtonDynamic = dynamic(
+  async () =>
+    (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  { ssr: false }
+);
 
 const Navbar = () => {
   const router = useRouter();
 
   return (
-    <div className="navbar rounded-lg bg-neutral-focus border-rounded flex flex-row justify-between border-neutral ">
+    <div className="border-rounded navbar flex flex-row justify-between rounded-lg border-neutral bg-neutral-focus ">
       <div className="navbar-start">
         <Link href="/">
-          <div className="btn btn-ghost hover:btn-link normal-case font-light text-3xl">
-          LOGO
+          <div className="btn btn-ghost text-3xl font-light normal-case hover:btn-link">
+            LOGO
           </div>
         </Link>
       </div>
@@ -26,7 +28,7 @@ const Navbar = () => {
             <li
               className={`${
                 router.pathname.slice(1).split("/")[0] === tabName
-                  ? "border-b rounded-none border-primary"
+                  ? "rounded-none border-b border-primary"
                   : ""
               } `}
               key={tabName}
@@ -39,11 +41,10 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end flex flex-row space-x-2 ">
-        <WalletMultiButton />
+        <WalletMultiButtonDynamic />
       </div>
     </div>
   );
 };
 
 export default Navbar;
-
